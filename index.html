@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Earn Pro - Fixed Auto Income</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+    <style>
+        body { margin:0; font-family:Arial; background:#f1f1f1; }
+        .container { display:flex; justify-content:center; align-items:center; min-height:100vh; }
+        .box { background:white; padding:20px; width:320px; border-radius:10px; box-shadow:0 0 10px gray; text-align:center; }
+        input { width:90%; padding:12px; margin:8px; border-radius:8px; border:1px solid #ccc; box-sizing: border-box; }
+        button { padding:12px; width:95%; margin:5px; border:none; background:#0072ff; color:white; border-radius:8px; cursor: pointer; }
+        .page { display:none; padding:15px; padding-bottom:90px; }
+        .active { display:block; }
+        .nav { position:fixed; bottom:0; width:100%; height:65px; background:white; display:flex; border-top:1px solid #ccc; z-index:100; }
+        .nav button { flex:1; background:none; color:black; display:flex; flex-direction:column; justify-content:center; align-items:center; border:none; }
+        .card { background:white; padding:15px; margin:10px 0; border-radius:10px; box-shadow:0 0 5px #ccc; }
+        .balance { font-size:24px; color:green; font-weight:bold; margin-top:5px; }
+        .plan-item { background:white; padding:12px; margin:8px 0; border-radius:8px; border-left:4px solid #0072ff; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div id="authSection" class="container">
+    <div class="box">
+        <h2 id="authTitle">Login</h2>
+        <input type="tel" id="uPhone" placeholder="Mobile Number">
+        <input type="password" id="uPass" placeholder="Password">
+        <button onclick="handleAuth()">Submit</button>
+        <p id="toggleText" onclick="toggleAuth()" style="color:blue; cursor:pointer;">New? Create Account</p>
+    </div>
+</div>
+
+<div id="app" style="display:none">
+    <div id="home" class="page active">
+        <h3>Investment Plans (30 Days)</h3>
+        <div class="plan-item"><span>₹149 (Daily ₹15)</span> <button onclick="buyPlan(149, 15)">Buy</button></div>
+        <div class="plan-item"><span>₹499 (Daily ₹33)</span> <button onclick="buyPlan(499, 33)">Buy</button></div>
+        <div class="plan-item"><span>₹999 (Daily ₹80)</span> <button onclick="buyPlan(999, 80)">Buy</button></div>
+        
+        <button onclick="logout()" style="background:red; margin-top:20px;">Logout</button>
+        
+        <h4>Active Plans</h4>
+        <div id="pHistoryList">Checking status...</div>
+    </div>
+
+    <div id="wallet" class="page">
+        <h3>Wallet</h3>
+        <div class="card">Current Balance: <div class="balance" id="balDisplay">₹0</div></div>
+        <div style="display:flex;"><button onclick="showSec('dep')">Deposit</button><button onclick="showSec('wit')">Withdraw</button></div>
+        
+        <div id="depBox" style="display:none" class="card">
+            <img src="scanner.jpg" width="180" style="margin-bottom:10px; border: 1px solid #ddd;">
+            <input type="number" id="dAmt" placeholder="Amount"><input type="text" id="dUTR" placeholder="UTR Number">
+            <button onclick="reqDeposit()" style="background:green">Submit Deposit</button>
+        </div>
+
+        <div id="witBox" style="display:none" class="card">
+            <input type="number" id="wAmt" placeholder="Min ₹1000"><input type="text" id="wUPI" placeholder="UPI ID">
+            <button onclick="reqWithdraw()" style="background:orange">Request Withdrawal</button>
+        </div>
+
+        <h4>History</h4>
+        <div id="historyLogs"></div>
+    </div>
+
+    <div class="nav">
+        <button onclick="openPage('home')">🏠<br>Home</button>
+        <button onclick="openPage('wallet')">💰<br>Wallet</button>
+    </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDUdc2JpVP_UtpNTQvAVpogzlW4q5DUTsY",
+  authDomain: "knowledge-fe4f5.firebaseapp.com",
+  projectId: "knowledge-fe4f5",
+  storageBucket: "knowledge-fe4f5.firebasestorage.app",
+  messagingSenderId: "611219098581",
+  appId: "1:611219098581:web:b445d32c4ec9536f144b5c"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let isLogin = true;
+let currentUser = localStorage.getItem("loggedInUser") || "";
+
+if(currentUser) startApp();
+
+function toggleAuth() { isLogin = !isLogin; document.getElementById("authTitle").innerText = isLogin ? "Login" : "Signup"; }
+
+function handleAuth() {
+    let p = document.getElementById("uPhone").value;
+    let pass = document.getElementById("uPass").value;
+    if(!p || !pass) return alert("Fill details");
+    if(isLogin) {
+        db.ref('users/' + p).once('value', (snap) => {
+            if(snap.exists() && snap.val().password === pass) {
+                currentUser = p; localStorage.setItem("loggedInUser", p); startApp();
+            } else { alert("Wrong details"); }
+        });
+    } else {
+        db.ref('users/' + p).set({ password: pass, balance: 0 }).then(() => {
+            alert("Signup Success!"); toggleAuth();
+        });
+    }
+}
+
+function startApp() {
+    document.getElementById("authSection").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    
+    // Step 1: Real-time Wallet UI
+    db.ref('users/' + currentUser + '/balance').on('value', (snap) => {
+        document.getElementById("balDisplay").innerText = "₹" + (snap.val() || 0);
+    });
+
+    // Step 2: Fix and Add Income immediately on login
+    processIncomeLogic();
+    renderHistory();
+}
+
+function processIncomeLogic() {
+    const now = Date.now();
+    db.ref('users/' + currentUser).once('value', (snap) => {
+        let userData = snap.val();
+        let plans = userData.plans || {};
+        let currentBal = Number(userData.balance || 0);
+        let updated = false;
+
+        for (let key in plans) {
+            let p = plans[key];
+            let purchaseTime = p.timestamp;
+            let lastClaimTime = p.lastClaim || purchaseTime;
+            
+            // Kitne miliseconds beete hain
+            let timeDiff = now - lastClaimTime;
+            // Kitne 24 ghante (days) beete hain
+            let daysToPay = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+
+            // Kitne din ka plan bacha hai (Total 30 days limit)
+            let totalAgeDays = Math.floor((now - purchaseTime) / (24 * 60 * 60 * 1000));
+
+            if (daysToPay >= 1 && totalAgeDays <= 30) {
+                // Agar user 30 din se zyada purana hai, toh sirf bache hue din ka do
+                let actualPayDays = (totalAgeDays > 30) ? (30 - Math.floor((lastClaimTime - purchaseTime)/(24*60*60*1000))) : daysToPay;
+                
+                if(actualPayDays > 0) {
+                    let income = actualPayDays * p.daily;
+                    currentBal += income;
+                    // Last claim ko 'pichele 24 ghante ke block' par set karein na ki 'Abhi' par
+                    // Isse calculation accurate rehti hai
+                    plans[key].lastClaim = lastClaimTime + (actualPayDays * 24 * 60 * 60 * 1000);
+                    updated = true;
+                }
+            }
+        }
+
+        if (updated) {
+            db.ref('users/' + currentUser).update({
+                balance: currentBal,
+                plans: plans
+            });
+        }
+        renderPlansUI(plans);
+    });
+}
+
+function buyPlan(price, daily) {
+    db.ref('users/' + currentUser).once('value', (snap) => {
+        let data = snap.val();
+        if(Number(data.balance) < price) return alert("Insufficient Balance!");
+        
+        let newBal = Number(data.balance) - price;
+        let now = Date.now();
+
+        db.ref('users/' + currentUser).update({ balance: newBal });
+        db.ref('users/' + currentUser + '/plans').push({ 
+            price: price, 
+            daily: daily, 
+            timestamp: now,
+            lastClaim: now
+        });
+        alert("Plan Activated! You will get ₹" + daily + " every 24 hours.");
+        processIncomeLogic(); // Refresh
+    });
+}
+
+function renderPlansUI(plans) {
+    let html = "";
+    for (let key in plans) {
+        let p = plans[key];
+        let now = Date.now();
+        let daysPassed = Math.floor((now - p.timestamp) / (24 * 60 * 60 * 1000));
+        let daysLeft = 30 - daysPassed;
+        if(daysLeft < 0) daysLeft = 0;
+
+        html = `<div class="plan-item">
+                    <span>₹${p.price} Plan (₹${p.daily}/day)</span>
+                    <small style="color:${daysLeft > 0 ? 'blue':'red'}">${daysLeft} days left</small>
+                </div>` + html;
+    }
+    document.getElementById("pHistoryList").innerHTML = html || "No active plans";
+}
+
+// Wallet Functions
+function reqDeposit() {
+    let amt = document.getElementById("dAmt").value;
+    let utr = document.getElementById("dUTR").value;
+    if(!amt || !utr) return alert("Fill all details");
+    db.ref('transactions').push({ type: 'Deposit', amt: amt, info: utr, status: 'Processing', user: currentUser, time: Date.now() });
+    alert("Request Sent! Admin will approve soon."); showSec('');
+}
+
+function reqWithdraw() {
+    let amt = Number(document.getElementById("wAmt").value);
+    let upi = document.getElementById("wUPI").value;
+    db.ref('users/' + currentUser + '/balance').once('value', (snap) => {
+        let bal = Number(snap.val() || 0);
+        if(amt < 1000 || amt > bal) return alert("Min ₹1000 or Low Balance");
+        db.ref('users/' + currentUser).update({ balance: bal - amt });
+        db.ref('transactions').push({ type: 'Withdraw', amt: amt, info: upi, status: 'Processing', user: currentUser, time: Date.now() });
+        alert("Withdrawal Requested!"); showSec('');
+    });
+}
+
+function renderHistory() {
+    db.ref('transactions').orderByChild('time').on('value', (snap) => {
+        let html = "";
+        snap.forEach((child) => {
+            let t = child.val();
+            if(t.user === currentUser) {
+                html = `<div class="card"><b>${t.type}</b>: ₹${t.amt} <br> <small>Status: ${t.status}</small></div>` + html;
+            }
+        });
+        document.getElementById("historyLogs").innerHTML = html;
+    });
+}
+
+function showSec(id) {
+    document.getElementById("depBox").style.display = id=='dep'?'block':'none';
+    document.getElementById("witBox").style.display = id=='wit'?'block':'none';
+}
+function openPage(id) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+function logout() { localStorage.removeItem("loggedInUser"); location.reload(); }
+</script>
+</body>
+</html>
