@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Win Go · Game Lobby</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
+    .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+
+    #homeTab .game-section {
+      min-width: 0;
+      color: #334155;
+      background: #fff;
+      border: 1px solid #f1d9df;
+      box-shadow: 0 10px 28px rgba(136, 19, 55, 0.08);
+      backdrop-filter: none;
+    }
+
+    #homeTab .game-main-card {
+      padding: 1.25rem;
+      border-color: #f3cbd5;
+    }
+
+    #homeTab .game-main-card h2,
+    #homeTab .game-card-heading {
+      color: #1f2937;
+    }
+
+    #homeTab .game-section .text-slate-400,
+    #homeTab .game-section .text-slate-500 {
+      color: #64748b;
+    }
+
+    #homeTab .game-section .text-slate-200,
+    #homeTab .game-section .text-slate-300 {
+      color: #334155;
+    }
+
+    #homeTab .game-section .text-emerald-400 {
+      color: #059669;
+    }
+
+    #homeTab .game-section .text-rose-400 {
+      color: #e11d48;
+    }
+
+    #homeTab .game-section .text-violet-400 {
+      color: #7c3aed;
+    }
+
+    #homeTab .game-periods {
+      gap: 0.625rem;
+    }
+
+    #homeTab .game-period {
+      min-width: 0;
+      min-height: 2.625rem;
+      padding: 0.625rem 0.5rem;
+      color: #475569;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+
+    #homeTab .game-period:hover {
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    #homeTab .game-period.bg-indigo-600 {
+      color: #fff;
+      background: #e11d48;
+      border-color: #e11d48;
+    }
+
+    #homeTab .game-period.bg-indigo-600:hover {
+      background: #be123c;
+      border-color: #be123c;
+    }
+
+    #homeTab .game-timer {
+      gap: 0.75rem;
+      color: #334155;
+      background: linear-gradient(115deg, #fff1f2, #fff7f8);
+      border: 1px solid #ffe0e6;
+    }
+
+    #homeTab .game-timer .text-amber-400 {
+      color: #e11d48;
+    }
+
+    #homeTab .game-lock-notice {
+      margin-top: -0.5rem;
+      padding: 0.5rem 0.75rem;
+      color: #9a3412;
+      background: #fff7ed;
+      border-radius: 0.625rem;
+      line-height: 1.45;
+    }
+
+    #homeTab .game-form label {
+      display: inline-block;
+      margin-bottom: 0.125rem;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    #homeTab .game-control {
+      min-width: 0;
+      color: #1f2937;
+      background-color: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    #homeTab .game-control:focus {
+      outline: 2px solid transparent;
+      border-color: #e11d48;
+      box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.14);
+    }
+
+    #homeTab .game-control:disabled {
+      color: #64748b;
+      background-color: #f1f5f9;
+      cursor: not-allowed;
+    }
+
+    #homeTab .game-submit-button {
+      min-height: 2.875rem;
+      background: #e11d48;
+      box-shadow: 0 5px 12px rgba(225, 29, 72, 0.18);
+    }
+
+    #homeTab .game-submit-button:hover:not(:disabled) {
+      background: #be123c;
+    }
+
+    #homeTab .game-submit-button:disabled {
+      color: #94a3b8;
+      background: #e2e8f0;
+      box-shadow: none;
+    }
+
+    #homeTab .game-history-card {
+      padding: 1rem;
+    }
+
+    #homeTab .game-card-heading {
+      line-height: 1.5;
+    }
+
+    #homeTab .game-history-table {
+      table-layout: fixed;
+      color: #334155;
+    }
+
+    #homeTab .game-history-table thead {
+      color: #64748b;
+      border-color: #e2e8f0;
+    }
+
+    #homeTab .game-history-table th,
+    #homeTab .game-history-table td {
+      padding-top: 0.625rem;
+      padding-bottom: 0.625rem;
+      vertical-align: middle;
+      overflow-wrap: anywhere;
+    }
+
+    #homeTab .game-history-table th {
+      font-weight: 600;
+    }
+
+    #homeTab .game-history-table th:nth-child(1),
+    #homeTab .game-history-table td:nth-child(1) {
+      width: 37%;
+    }
+
+    #homeTab .game-history-table th:nth-child(2),
+    #homeTab .game-history-table td:nth-child(2) {
+      width: 15%;
+    }
+
+    #homeTab .game-history-table th:nth-child(3),
+    #homeTab .game-history-table td:nth-child(3) {
+      width: 25%;
+    }
+
+    #homeTab .game-history-table th:nth-child(4),
+    #homeTab .game-history-table td:nth-child(4) {
+      width: 23%;
+    }
+
+    #homeTab .game-history-table tbody tr {
+      border-color: #f1f5f9;
+    }
+
+    #homeTab #myGameHistory > div {
+      align-items: flex-start;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+    }
+
+    #homeTab #myGameHistory > div > div {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    #homeTab #myGameHistory > div > span {
+      max-width: 42%;
+      flex-shrink: 0;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 380px) {
+      #homeTab .game-main-card {
+        padding: 1rem;
+      }
+
+      #homeTab .game-periods {
+        gap: 0.375rem;
+      }
+
+      #homeTab .game-period {
+        font-size: 0.6875rem;
+      }
+
+      #homeTab .game-timer {
+        padding: 0.875rem;
+      }
+
+      #homeTab .game-timer #gameCountdown {
+        font-size: 1.625rem;
+      }
+
+      #homeTab .game-history-table th,
+      #homeTab .game-history-table td {
+        padding-right: 0.25rem;
+        padding-left: 0.25rem;
+        font-size: 0.675rem;
+      }
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1440px;
+      margin-inline: auto;
+      padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+    }
+
+    .lobby-hero {
+      background:
+        radial-gradient(ellipse at 85% 20%, rgba(244, 63, 94, 0.2), transparent 34%),
+        linear-gradient(120deg, #111827, #1e1b4b 58%, #312e81);
+    }
+
+    .game-tile {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(30, 41, 59, 0.78);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .game-tile:hover {
+      transform: translateY(-3px);
+      border-color: rgba(251, 113, 133, 0.6);
+      box-shadow: 0 16px 35px rgba(2, 6, 23, 0.28);
+    }
+
+    .game-art {
+      min-height: 9rem;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      font-size: clamp(3rem, 8vw, 5rem);
+    }
+
+    .game-art-wingo { background: radial-gradient(circle at 50% 40%, #fb7185, #881337 72%); }
+    .game-art-mines { background: radial-gradient(circle at 50% 40%, #fbbf24, #713f12 72%); }
+    .game-art-dice { background: radial-gradient(circle at 50% 40%, #a78bfa, #4c1d95 72%); }
+    .game-art-plinko { background: radial-gradient(circle at 50% 40%, #38bdf8, #164e63 72%); }
+    .game-art-chicken { background: radial-gradient(circle at 50% 40%, #fde68a, #9a3412 72%); }
+    .chicken-art-illustration { width: 6.5rem; height: 6.5rem; filter: drop-shadow(0 0.4rem 0.5rem rgba(15, 23, 42, 0.3)); }
+    #homeTab .lobby-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+
+    .game-tile:focus-visible,
+    .game-tile button:focus-visible,
+    .game-view-button:focus-visible {
+      outline: 3px solid #fb7185;
+      outline-offset: 3px;
+    }
+
+    .arcade-panel {
+      color: #334155;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    }
+
+    .arcade-panel label { display: block; margin-bottom: 0.35rem; color: #475569; font-size: 0.8rem; font-weight: 700; }
+    .arcade-control {
+      width: 100%;
+      min-width: 0;
+      padding: 0.75rem;
+      color: #1f2937;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.75rem;
+    }
+    .arcade-control:focus { outline: 2px solid #fb7185; outline-offset: 1px; }
+    .arcade-primary {
+      min-height: 2.8rem;
+      padding: 0.7rem 1rem;
+      color: #fff;
+      background: #e11d48;
+      border-radius: 0.75rem;
+      font-weight: 800;
+    }
+    .arcade-primary:hover { background: #be123c; }
+    .arcade-primary:disabled { cursor: not-allowed; background: #94a3b8; }
+    .mine-board { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.3rem, 1.5vw, 0.65rem); }
+    .mine-cell {
+      aspect-ratio: 1;
+      min-width: 0;
+      color: #334155;
+      background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
+      border: 1px solid #cbd5e1;
+      border-radius: 0.65rem;
+      font-size: clamp(1rem, 4vw, 1.6rem);
+      font-weight: 800;
+    }
+    .mine-cell:not(:disabled):hover { background: #ffe4e6; border-color: #fb7185; }
+    .mine-cell.safe { color: #047857; background: #d1fae5; animation: mine-gem-rise 240ms ease-out; }
+    .mine-cell.mine { color: #be123c; background: #ffe4e6; }
+    @keyframes mine-gem-rise {
+      from { transform: translateY(0.5rem); opacity: 0.45; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .chicken-track { display: flex; flex-direction: column-reverse; gap: 0.35rem; }
+    .chicken-lane {
+      min-height: 2.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.65rem;
+      color: #475569;
+      background: repeating-linear-gradient(90deg, #f1f5f9 0 2.2rem, #e2e8f0 2.2rem 2.45rem);
+      border: 1px solid #cbd5e1;
+      border-radius: 0.65rem;
+    }
+    .chicken-lane.safe { background: linear-gradient(90deg, #d1fae5, #ecfdf5); border-color: #6ee7b7; }
+    .chicken-lane.crash { overflow: hidden; background: #ffe4e6; border-color: #fda4af; }
+    .chicken-bird { display: inline-block; font-size: 1.55rem; }
+    .chicken-bird.hit { animation: chicken-hit 700ms ease-in forwards; }
+    .chicken-car { display: inline-block; margin-left: auto; font-size: 1.65rem; }
+    .chicken-car.hit { animation: car-hit 700ms ease-in forwards; }
+    @keyframes car-hit {
+      from { transform: translateX(180%); }
+      to { transform: translateX(-120%); }
+    }
+    @keyframes chicken-hit {
+      35% { transform: translateX(1.5rem) rotate(-20deg); }
+      to { transform: translate(2.5rem, -2rem) rotate(70deg); opacity: 0.25; }
+    }
+
+    @media (min-width: 640px) {
+      #homeTab .lobby-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (min-width: 1024px) {
+      #userDashboard { padding-inline: 2rem; }
+      #homeTab .lobby-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .game-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr); align-items: start; }
+      #bottomNav { max-width: 32rem; margin-inline: auto; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-20">
+
+  <!-- AUTH CONTAINER (Login / Signup) -->
+  <div id="authContainer" class="flex-1 flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md p-6 rounded-2xl shadow-2xl">
+      <h2 id="authTitle" class="text-2xl font-bold text-center mb-6 text-indigo-400">Account Signup</h2>
+      
+      <!-- SIGNUP FORM -->
+      <form id="signupForm" onsubmit="handleSignup(event)" class="space-y-4">
+        <div>
+          <label class="text-sm text-slate-400">FullName</label>
+          <input type="text" id="signupName" required placeholder="Aapka Naam" class="w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400">Gmail Address</label>
+          <input type="email" id="signupEmail" required placeholder="example@gmail.com" class="w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400">Password</label>
+          <input type="password" id="signupPass" required placeholder="••••••••" class="w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400">Confirm Password</label>
+          <input type="password" id="signupPassConfirm" required placeholder="••••••••" class="w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <label class="flex items-start gap-2 text-xs leading-relaxed text-slate-300">
+          <input type="checkbox" id="signupTermsAccepted" required class="mt-0.5 h-4 w-4 shrink-0 accent-indigo-500">
+          <span>I confirm that I am 18 years of age or older, and I understand that I play these games at my own responsibility.</span>
+        </label>
+        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition">Sign Up</button>
+      </form>
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 hidden">
+        <div>
+          <label class="text-sm text-slate-400">Gmail Address</label>
+          <input type="email" id="loginEmail" required placeholder="example@gmail.com" class="w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="text-sm text-slate-400">Password</label>
+          <input type="password" id="loginPass" required placeholder="••••••••" class="w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <label class="flex items-start gap-2 text-xs leading-relaxed text-slate-300">
+          <input type="checkbox" id="loginTermsAccepted" required class="mt-0.5 h-4 w-4 shrink-0 accent-indigo-500">
+          <span>I confirm that I am 18 years of age or older, and I understand that I play these games at my own responsibility.</span>
+        </label>
+        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition">Log In</button>
+      </form>
+
+      <p class="text-center text-sm mt-4 text-slate-400">
+        <span id="authToggleText">Pahle se account hai?</span> 
+        <button onclick="toggleAuth()" id="authToggleBtn" class="text-indigo-400 font-semibold underline ml-1">Log In Karein</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- MAIN APP USER DASHBOARD -->
+  <div id="userDashboard" class="app-shell hidden flex-1 p-4 w-full">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6 pt-2">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-lg" id="userAvatar">U</div>
+        <div>
+          <p class="text-xs text-slate-400">Swagat hai,</p>
+          <h3 class="font-bold text-lg text-white" id="userNameDisplay">User Name</h3>
+        </div>
+      </div>
+      <button onclick="logout()" class="p-2 text-rose-400 hover:bg-slate-800 rounded-lg"><i class="fa-solid fa-right-from-bracket text-xl"></i></button>
+    </div>
+
+    <!-- HOME TAB -->
+    <div id="homeTab" class="space-y-5">
+      <div id="lobbyView" class="space-y-5">
+        <section class="lobby-hero rounded-3xl border border-indigo-400/20 p-5 sm:p-8 lg:p-10">
+          <p class="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-rose-300">Your game lounge</p>
+          <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div>
+              <h1 class="text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">Game Lobby</h1>
+              <p class="mt-2 max-w-xl text-sm text-slate-300 sm:text-base">Choose a game, jump in, and switch whenever you like.</p>
+            </div>
+            <div class="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 sm:min-w-52">
+              <div>
+                <p class="text-xs text-slate-400">Wallet balance</p>
+                <p class="text-xl font-extrabold text-emerald-300">₹<span class="userBalance">0.00</span></p>
+              </div>
+              <button onclick="switchTab('wallet')" class="rounded-xl bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/20">Wallet</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-bold text-white sm:text-2xl">All games</h2>
+            <p class="mt-1 text-sm text-slate-400">Pick a game to start playing</p>
+          </div>
+          <span class="rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-xs text-slate-300">5 games</span>
+        </div>
+
+        <section class="lobby-grid grid grid-cols-1 gap-4 sm:gap-5" aria-label="Available games">
+          <article class="game-tile rounded-2xl">
+            <div class="game-art game-art-wingo" role="img" aria-label="Win Go game artwork">🎯</div>
+            <div class="space-y-3 p-4">
+              <div><h3 class="text-lg font-bold text-white">Win Go</h3><p class="mt-1 text-xs text-slate-400">Pick a color, number, or size</p></div>
+              <button onclick="openGame('wingo')" class="w-full rounded-xl bg-rose-600 px-4 py-3 text-sm font-bold text-white hover:bg-rose-500">Play Now <i class="fa-solid fa-arrow-right ml-1"></i></button>
+            </div>
+          </article>
+          <article class="game-tile rounded-2xl">
+            <div class="game-art game-art-mines" role="img" aria-label="Mines game artwork">💣</div>
+            <div class="space-y-3 p-4">
+              <div><h3 class="text-lg font-bold text-white">Mines</h3><p class="mt-1 text-xs text-slate-400">Find gems and cash out before a mine</p></div>
+              <button onclick="openGame('mines')" class="w-full rounded-xl bg-amber-600 px-4 py-3 text-sm font-bold text-white hover:bg-amber-500">Play Now <i class="fa-solid fa-arrow-right ml-1"></i></button>
+            </div>
+          </article>
+          <article class="game-tile rounded-2xl">
+            <div class="game-art game-art-dice" role="img" aria-label="Dice game artwork">🎲</div>
+            <div class="space-y-3 p-4">
+              <div><h3 class="text-lg font-bold text-white">Dice</h3><p class="mt-1 text-xs text-slate-400">Choose a target and roll for a multiplier</p></div>
+              <button onclick="openGame('dice')" class="w-full rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-white hover:bg-violet-500">Play Now <i class="fa-solid fa-arrow-right ml-1"></i></button>
+            </div>
+          </article>
+          <article class="game-tile rounded-2xl">
+            <div class="game-art game-art-plinko" role="img" aria-label="Plinko game artwork">🔵</div>
+            <div class="space-y-3 p-4">
+              <div><h3 class="text-lg font-bold text-white">Plinko</h3><p class="mt-1 text-xs text-slate-400">Drop a ball and land on a multiplier</p></div>
+              <button onclick="openGame('plinko')" class="w-full rounded-xl bg-sky-600 px-4 py-3 text-sm font-bold text-white hover:bg-sky-500">Play Now <i class="fa-solid fa-arrow-right ml-1"></i></button>
+            </div>
+          </article>
+          <article class="game-tile rounded-2xl">
+            <div class="game-art game-art-chicken" role="img" aria-label="Chicken Roll game artwork">
+              <svg class="chicken-art-illustration" viewBox="0 0 100 100" aria-hidden="true">
+                <ellipse cx="46" cy="62" rx="31" ry="23" fill="#fff7ed"/>
+                <ellipse cx="46" cy="62" rx="16" ry="12" fill="#fed7aa"/>
+                <circle cx="65" cy="34" r="18" fill="#fff7ed"/>
+                <circle cx="72" cy="32" r="2.5" fill="#1f2937"/>
+                <path d="M81 36l15 6-15 6z" fill="#f97316"/>
+                <circle cx="57" cy="15" r="6" fill="#ef4444"/>
+                <circle cx="66" cy="13" r="6" fill="#ef4444"/>
+                <circle cx="74" cy="17" r="5" fill="#ef4444"/>
+                <path d="M48 48c-14-12-23-4-17 7 5 8 15 8 22 5" fill="#fdba74" stroke="#f97316" stroke-width="2"/>
+                <path d="M20 58c-13-15-18 3-7 8-12 5-2 18 10 9" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+                <path d="M37 82v9m18-9v9m-7-2h-9m25 2h-9" fill="none" stroke="#f97316" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="space-y-3 p-4">
+              <div><h3 class="text-lg font-bold text-white">Chicken Roll</h3><p class="mt-1 text-xs text-slate-400">Jump up the road, avoid cars, and cash out</p></div>
+              <button onclick="openGame('chicken')" class="w-full rounded-xl bg-orange-600 px-4 py-3 text-sm font-bold text-white hover:bg-orange-500">Play Now <i class="fa-solid fa-arrow-right ml-1"></i></button>
+            </div>
+          </article>
+        </section>
+        <p class="text-xs leading-relaxed text-slate-500">Demo only: game rounds and wallet balances are stored in this browser and are not secure or suitable for real-money play.</p>
+        <footer class="rounded-2xl border border-slate-700 bg-slate-900/70 p-5 text-slate-300">
+          <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <p class="font-bold text-white">Game Lobby</p>
+              <p class="mt-1 text-xs text-slate-400">A browser-based gaming demo for entertainment and learning.</p>
+            </div>
+            <nav aria-label="Legal and company information" class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+              <button type="button" onclick="openInfoModal('privacy')" class="font-semibold text-slate-300 hover:text-white">Privacy Policy</button>
+              <button type="button" onclick="openInfoModal('about')" class="font-semibold text-slate-300 hover:text-white">About Us</button>
+            </nav>
+          </div>
+          <p class="mt-4 border-t border-slate-700 pt-3 text-xs text-slate-500">© <span id="footerYear"></span> Game Lobby. Demo only — no real-money gaming or payouts.</p>
+        </footer>
+      </div>
+
+      <section id="gameView" class="hidden space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 p-3 sm:p-4">
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="closeGame()" aria-label="Back to game lobby" class="game-view-button flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-white hover:bg-slate-700"><i class="fa-solid fa-arrow-left"></i></button>
+            <div><p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Game Lobby</p><h1 id="activeGameTitle" class="font-bold text-white sm:text-lg">Win Go</h1></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="hidden text-xs text-slate-400 sm:inline">Balance</span>
+            <span class="font-bold text-emerald-300">₹<span class="userBalance">0.00</span></span>
+            <button onclick="switchTab('wallet')" class="rounded-lg border border-slate-600 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-800">Wallet</button>
+            <button onclick="closeGame()" class="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-500">All games</button>
+          </div>
+        </div>
+        <div id="winGoContent" class="space-y-4">
+
+      <!-- BIG SMALL DEMO GAME -->
+      <section class="glass game-section game-main-card p-4 rounded-2xl space-y-4 border border-indigo-500/20">
+        <div class="flex justify-between items-start gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold text-white">Win Go</h2>
+            <p class="text-xs text-slate-400 mt-1">Demo game · Jeet par 2x total return (stake included)</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] text-slate-400">Game wallet</p>
+            <p class="font-bold text-emerald-400">₹<span class="userBalance">0.00</span></p>
+          </div>
+        </div>
+
+        <div class="game-periods grid grid-cols-3 gap-2" role="group" aria-label="Game period">
+          <button type="button" onclick="selectGamePeriod(30000)" data-period="30000" class="game-period px-2 py-2 rounded-lg text-xs font-bold">30 seconds</button>
+          <button type="button" onclick="selectGamePeriod(60000)" data-period="60000" class="game-period px-2 py-2 rounded-lg text-xs font-bold">1 minute</button>
+          <button type="button" onclick="selectGamePeriod(300000)" data-period="300000" class="game-period px-2 py-2 rounded-lg text-xs font-bold">5 minutes</button>
+        </div>
+
+        <div class="game-timer rounded-xl bg-slate-900/80 p-4 flex justify-between items-center">
+          <div>
+            <p class="text-xs text-slate-400">Period <span id="gamePeriodLabel">30 seconds</span></p>
+            <p class="text-sm font-semibold text-white">Next result in</p>
+          </div>
+          <p id="gameCountdown" class="text-3xl font-black text-amber-400 tabular-nums" aria-live="polite">00:30</p>
+        </div>
+        <p id="gameLockNotice" class="game-lock-notice text-xs text-amber-300 text-center">Round ke aakhri 5 seconds mein bets band rahenge.</p>
+
+        <form onsubmit="placeGameBet(event)" class="game-form space-y-3">
+          <div>
+            <label for="gameBetType" class="text-xs text-slate-400">Bet type</label>
+            <select id="gameBetType" onchange="updatePickOptions()" class="game-control w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white text-sm">
+              <option value="color">Color</option>
+              <option value="number">Number (0-9)</option>
+              <option value="size">Big / Small</option>
+            </select>
+          </div>
+          <div>
+            <label for="gamePick" class="text-xs text-slate-400">Your pick</label>
+            <select id="gamePick" class="game-control w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white text-sm"></select>
+          </div>
+          <div>
+            <label for="gameBetAmount" class="text-xs text-slate-400">Bet amount (₹)</label>
+            <input id="gameBetAmount" type="number" min="1" step="0.01" required placeholder="Minimum ₹1" class="game-control w-full mt-1 p-3 bg-slate-800 rounded-xl border border-slate-700 text-white text-sm">
+          </div>
+          <button id="placeGameBetButton" type="submit" class="game-submit-button w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-400 text-white font-bold rounded-xl transition">Place bet · 2x return</button>
+        </form>
+
+        <p class="text-[10px] leading-relaxed text-amber-200/80">Prototype only: wallet, bets aur random results isi browser ke localStorage mein hain. Inhe badla ja sakta hai; real-money use ke liye secure server, verified results aur legal review zaroori hain.</p>
+      </section>
+
+      <section class="glass game-section game-history-card p-4 rounded-xl space-y-3">
+        <h3 class="game-card-heading font-bold text-sm text-slate-200">Game history · <span id="historyPeriodLabel">30 seconds</span></h3>
+        <div class="overflow-x-auto">
+          <table class="game-history-table w-full text-left text-xs">
+            <thead class="text-slate-500 border-b border-slate-700">
+              <tr><th class="py-2 pr-2">Period</th><th class="py-2 pr-2">Number</th><th class="py-2 pr-2">Color</th><th class="py-2">Result</th></tr>
+            </thead>
+            <tbody id="gameHistory" class="text-slate-300">
+              <tr><td colspan="4" class="py-4 text-center text-slate-500">Abhi koi result nahi hai</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="gameHistoryPagination" class="flex items-center justify-between gap-2 text-xs"></div>
+      </section>
+
+      <section class="glass game-section game-history-card p-4 rounded-xl space-y-3">
+        <h3 class="game-card-heading font-bold text-sm text-slate-200">My history · <span id="myHistoryPeriodLabel">30 seconds</span></h3>
+        <div id="myGameHistory" class="space-y-2 text-xs text-slate-400">
+          <p class="text-center py-3">Abhi koi bet nahi hai</p>
+        </div>
+        <div id="myGameHistoryPagination" class="flex items-center justify-between gap-2 text-xs"></div>
+      </section>
+        </div>
+        <div id="additionalGameMount" class="hidden"></div>
+      </section>
+    </div>
+
+    <!-- WALLET TAB -->
+    <div id="walletTab" class="space-y-4 hidden">
+      <div class="glass p-6 rounded-2xl bg-gradient-to-br from-indigo-900/40 to-slate-900">
+        <p class="text-slate-400 text-sm">Available Balance</p>
+        <p class="text-4xl font-extrabold text-emerald-400 my-2">₹<span class="userBalance">0.00</span></p>
+        <p class="text-xs text-slate-500" id="userEmailDisplay">user@gmail.com</p>
+      </div>
+
+      <!-- Action Buttons with Logos -->
+      <div class="grid grid-cols-2 gap-4">
+        <button onclick="openDepositModal()" class="glass p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-slate-800/80 transition group">
+          <div class="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-[#22c55e] fa-qrcode"></i>
+          </div>
+          <span class="font-semibold text-emerald-400 text-sm">Deposit</span>
+        </button>
+
+        <button onclick="openWithdrawModal()" class="glass p-4 rounded-xl flex flex-col items-center gap-2 hover:bg-slate-800/80 transition group">
+          <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+            <i class="fa-solid fa-[#f43f5e] fa-[#f43f5e] fa-building-columns"></i>
+          </div>
+          <span class="font-semibold text-rose-400 text-sm">Withdraw</span>
+        </button>
+      </div>
+
+      <!-- Transactions History -->
+      <div class="glass p-4 rounded-xl">
+        <h4 class="font-bold text-sm text-slate-300 mb-3">Recent Transactions</h4>
+        <div id="transactionHistory" class="space-y-2 text-xs text-slate-400">
+          <p class="text-center py-4">Koi transaction nahi mila</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION BAR (Icon Only) -->
+  <nav id="bottomNav" class="hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-slate-800 px-3 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] flex justify-around items-center rounded-t-2xl">
+    <button onclick="switchTab('home')" id="navHomeBtn" aria-label="Game lobby" class="flex min-w-20 flex-col items-center gap-1 p-2 text-indigo-400 hover:text-indigo-300 transition">
+      <i class="fa-solid fa-house text-xl"></i><span class="text-[10px] font-semibold">Games</span>
+    </button>
+    <button onclick="switchTab('wallet')" id="navWalletBtn" aria-label="Wallet" class="flex min-w-20 flex-col items-center gap-1 p-2 text-slate-500 hover:text-indigo-400 transition">
+      <i class="fa-solid fa-wallet text-xl"></i><span class="text-[10px] font-semibold">Wallet</span>
+    </button>
+  </nav>
+
+  <!-- DEPOSIT MODAL -->
+  <div id="depositModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="glass w-full max-w-sm p-6 rounded-2xl relative space-y-4">
+      <button onclick="closeModals()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-qrcode"></i> Deposit Money</h3>
+      
+      <!-- Payment Image (pay.jpg) -->
+      <div class="bg-white p-2 rounded-xl text-center">
+        <img src="./pay.jpg" alt="Scan and Pay" class="w-full max-h-[40vh] mx-auto object-contain rounded-lg" />
+      </div>
+
+      <form onsubmit="handleDepositSubmit(event)" class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-400">Amount (₹)</label>
+          <input type="number" id="depositAmount" min="1" required placeholder="Kitna amount daala?" class="w-full mt-1 p-2.5 bg-slate-800 rounded-lg border border-slate-700 text-white text-sm">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">UTR / Reference Number</label>
+          <input type="text" id="depositUTR" required placeholder="12 Digit UTR Number" class="w-full mt-1 p-2.5 bg-slate-800 rounded-lg border border-slate-700 text-white text-sm">
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-sm">Submit Request</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- WITHDRAW MODAL -->
+  <div id="withdrawModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="glass w-full max-w-sm p-6 rounded-2xl relative space-y-4">
+      <button onclick="closeModals()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <h3 class="text-lg font-bold text-rose-400 flex items-center gap-2"><i class="fa-solid fa-building-columns"></i> Withdraw Money</h3>
+      
+      <form onsubmit="handleWithdrawSubmit(event)" class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-400">UPI ID</label>
+          <input type="text" id="withdrawUPI" required placeholder="example@upi" class="w-full mt-1 p-2.5 bg-slate-800 rounded-lg border border-slate-700 text-white text-sm">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">Amount (₹)</label>
+          <input type="number" id="withdrawAmount" min="1" required placeholder="Kitna nikalna hai?" class="w-full mt-1 p-2.5 bg-slate-800 rounded-lg border border-slate-700 text-white text-sm">
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-lg text-sm">Submit Request</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="infoModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+    <section class="w-full max-w-2xl rounded-2xl border border-slate-700 bg-slate-900 p-5 text-slate-200 shadow-2xl sm:p-7">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-700 pb-4">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-300">Game Lobby</p>
+          <h2 id="infoModalTitle" class="mt-1 text-2xl font-extrabold text-white"></h2>
+        </div>
+        <button type="button" onclick="closeInfoModal()" aria-label="Close information" class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+      <ol id="infoModalContent" class="mt-5 max-h-[65vh] list-decimal space-y-3 overflow-y-auto pl-5 text-sm leading-relaxed text-slate-300"></ol>
+      <p class="mt-5 border-t border-slate-700 pt-4 text-xs text-slate-500">This information describes the current browser-based demo experience.</p>
+    </section>
+  </div>
+
+  <script>
+    let isLoginView = false;
+    let currentUser = null;
+    const gamePeriods = [30000, 60000, 300000];
+    let selectedGamePeriod = 30000;
+    let gameHistoryPage = 1;
+    let myGameHistoryPage = 1;
+    const historyPageSize = 10;
+    let gameTimerInterval = null;
+
+    function getUsers() { return JSON.parse(localStorage.getItem('app_users') || '[]'); }
+    function saveUsers(users) { localStorage.setItem('app_users', JSON.stringify(users)); }
+    function getRequests() { return JSON.parse(localStorage.getItem('app_requests') || '[]'); }
+    function saveRequests(reqs) { localStorage.setItem('app_requests', JSON.stringify(reqs)); }
+    function getGameBets() { return JSON.parse(localStorage.getItem('app_bigsmall_bets') || '[]'); }
+    function saveGameBets(bets) { localStorage.setItem('app_bigsmall_bets', JSON.stringify(bets)); }
+    function getGameHistory() { return JSON.parse(localStorage.getItem('app_bigsmall_history') || '{}'); }
+    function saveGameHistory(history) { localStorage.setItem('app_bigsmall_history', JSON.stringify(history)); }
+    function getGameRoundEnds() {
+      const saved = JSON.parse(localStorage.getItem('app_bigsmall_round_ends') || '{}');
+      const now = Date.now();
+      let initialized = false;
+      gamePeriods.forEach(period => {
+        if (!Number.isFinite(saved[period])) {
+          saved[period] = (Math.floor(now / period) + 1) * period;
+          initialized = true;
+        }
+      });
+      if (initialized) localStorage.setItem('app_bigsmall_round_ends', JSON.stringify(saved));
+      return saved;
+    }
+
+    function toggleAuth() {
+      isLoginView = !isLoginView;
+      document.getElementById('signupForm').classList.toggle('hidden', isLoginView);
+      document.getElementById('loginForm').classList.toggle('hidden', !isLoginView);
+      document.getElementById('authTitle').innerText = isLoginView ? 'User Login' : 'Account Signup';
+      document.getElementById('authToggleText').innerText = isLoginView ? 'Account nahi hai?' : 'Pahle se account hai?';
+      document.getElementById('authToggleBtn').innerText = isLoginView ? 'Sign Up' : 'Log In';
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      if (!document.getElementById('signupTermsAccepted').checked) {
+        alert('Please confirm that you are 18 or older and accept the responsibility statement.');
+        return;
+      }
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('signupPass').value;
+      const passConfirm = document.getElementById('signupPassConfirm').value;
+
+      if (!email.endsWith('@gmail.com')) { alert('Kripya valid @gmail.com enter karein'); return; }
+      if (pass !== passConfirm) { alert('Dono Password match nahi kar rahe hain!'); return; }
+
+      const users = getUsers();
+      if (users.some(u => u.email === email)) { alert('Yeh Gmail pehle se registered hai!'); return; }
+
+      const newUser = { id: Date.now(), name, email, password: pass, balance: 0 };
+      users.push(newUser);
+      saveUsers(users);
+      alert('Signup Kamyab hua! Ab login karein.');
+      toggleAuth();
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      if (!document.getElementById('loginTermsAccepted').checked) {
+        alert('Please confirm that you are 18 or older and accept the responsibility statement.');
+        return;
+      }
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPass').value;
+
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.password === pass);
+
+      if (!user) { alert('Galat Gmail ya Password!'); return; }
+
+      currentUser = user;
+      localStorage.setItem('active_session', JSON.stringify(user.email));
+      showDashboard();
+    }
+
+    const infoContent = {
+      privacy: {
+        title: 'Privacy Policy',
+        lines: [
+          'This page is a browser-based demo; it does not provide a hosted account service or cloud synchronisation.',
+          'The demo stores account details, game rounds, wallet balances, and activity in this browser’s local storage.',
+          'Anyone with access to this browser profile may be able to view or change locally stored demo data.',
+          'Do not enter real passwords, payment credentials, or other sensitive personal information.',
+          'Clearing browser storage or site data may permanently remove locally saved accounts and game progress.',
+          'This demo does not verify identity, process deposits, or issue real withdrawals or winnings.',
+          'Some page styling, icons, or fallback assets may load from third-party content delivery services.',
+          'Those third-party services may receive standard connection information when your browser requests their resources.',
+          'The demo does not include a server-side support, data export, or account recovery facility.',
+          'Use the demo only with information you are comfortable keeping on this device.'
+        ]
+      },
+      about: {
+        title: 'About Us',
+        lines: [
+          'Game Lobby is a small browser-based demonstration of a multi-game interface.',
+          'It brings several lightweight games together in one place for simple, accessible play.',
+          'The experience is designed to illustrate front-end interaction and local browser storage.',
+          'Game results and balances are simulated and are not connected to a payment provider.',
+          'No real-money deposits, withdrawals, prizes, or financial services are offered.',
+          'All game and account data in this prototype is managed locally by the user’s browser.',
+          'The project is intended for demonstration and entertainment, not as a commercial gaming service.',
+          'Availability and saved progress may depend on the browser and device being used.',
+          'Players should follow local laws and stop playing if the experience is not enjoyable.',
+          'By using the demo, visitors acknowledge its prototype nature and its stated limitations.'
+        ]
+      }
+    };
+
+    function openInfoModal(section) {
+      const content = infoContent[section];
+      if (!content) return;
+      document.getElementById('infoModalTitle').innerText = content.title;
+      document.getElementById('infoModalContent').innerHTML = content.lines
+        .map(line => `<li>${line}</li>`)
+        .join('');
+      document.getElementById('infoModal').classList.remove('hidden');
+    }
+
+    function closeInfoModal() {
+      document.getElementById('infoModal').classList.add('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('authContainer').classList.add('hidden');
+      document.getElementById('userDashboard').classList.remove('hidden');
+      document.getElementById('bottomNav').classList.remove('hidden');
+      updateUserData();
+      startGameTimer();
+    }
+
+    function updateUserData() {
+      const users = getUsers();
+      currentUser = users.find(u => u.email === currentUser.email) || currentUser;
+
+      document.getElementById('userNameDisplay').innerText = currentUser.name;
+      document.getElementById('userEmailDisplay').innerText = currentUser.email;
+      document.getElementById('userAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
+
+      document.querySelectorAll('.userBalance').forEach(el => el.innerText = Number(currentUser.balance).toFixed(2));
+      renderHistory();
+      renderGameHistory();
+      renderMyGameHistory();
+    }
+
+    function switchTab(tab) {
+      if (tab === 'home') closeGame();
+      document.getElementById('homeTab').classList.toggle('hidden', tab !== 'home');
+      document.getElementById('walletTab').classList.toggle('hidden', tab !== 'wallet');
+      document.getElementById('navHomeBtn').className = tab === 'home'
+        ? 'flex min-w-20 flex-col items-center gap-1 p-2 text-indigo-400'
+        : 'flex min-w-20 flex-col items-center gap-1 p-2 text-slate-500';
+      document.getElementById('navWalletBtn').className = tab === 'wallet'
+        ? 'flex min-w-20 flex-col items-center gap-1 p-2 text-indigo-400'
+        : 'flex min-w-20 flex-col items-center gap-1 p-2 text-slate-500';
+    }
+
+    function periodName(period) {
+      return period === 30000 ? '30 seconds' : period === 60000 ? '1 minute' : '5 minutes';
+    }
+
+    function selectGamePeriod(period) {
+      if (!gamePeriods.includes(period)) return;
+      selectedGamePeriod = period;
+      gameHistoryPage = 1;
+      myGameHistoryPage = 1;
+      document.querySelectorAll('.game-period').forEach(button => {
+        const isSelected = Number(button.dataset.period) === period;
+        button.className = `game-period px-2 py-2 rounded-lg text-xs font-bold ${isSelected
+          ? 'bg-indigo-600 text-white'
+          : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`;
+        button.setAttribute('aria-pressed', String(isSelected));
+      });
+      document.getElementById('gamePeriodLabel').innerText = periodName(period);
+      document.getElementById('historyPeriodLabel').innerText = periodName(period);
+      document.getElementById('myHistoryPeriodLabel').innerText = periodName(period);
+      renderGameHistory();
+      renderMyGameHistory();
+      updateGameTimer();
+    }
+
+    function updatePickOptions() {
+      const type = document.getElementById('gameBetType').value;
+      const picks = type === 'color'
+        ? [['green', 'Green'], ['violet', 'Violet'], ['red', 'Red']]
+        : type === 'number'
+          ? Array.from({ length: 10 }, (_, number) => [String(number), String(number)])
+          : [['big', 'Big (5-9)'], ['small', 'Small (0-4)']];
+      const pickSelect = document.getElementById('gamePick');
+      pickSelect.innerHTML = picks.map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+    }
+
+    function startGameTimer() {
+      if (gameTimerInterval !== null) return;
+      getGameRoundEnds();
+      selectGamePeriod(selectedGamePeriod);
+      updatePickOptions();
+      updateGameTimer();
+      gameTimerInterval = window.setInterval(updateGameTimer, 250);
+    }
+
+    function updateGameTimer() {
+      if (!currentUser) return;
+      const roundEnds = getGameRoundEnds();
+      const now = Date.now();
+      gamePeriods.forEach(period => {
+        while (now >= roundEnds[period]) {
+          resolveGameRound(period, roundEnds[period] - period);
+          roundEnds[period] += period;
+        }
+      });
+      localStorage.setItem('app_bigsmall_round_ends', JSON.stringify(roundEnds));
+
+      const remainingMs = Math.max(0, roundEnds[selectedGamePeriod] - now);
+      const remainingSeconds = Math.ceil(remainingMs / 1000);
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = remainingSeconds % 60;
+      document.getElementById('gameCountdown').innerText =
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+      const betsOpen = remainingMs > 5000;
+      document.getElementById('placeGameBetButton').disabled = !betsOpen;
+      document.getElementById('gameBetType').disabled = !betsOpen;
+      document.getElementById('gamePick').disabled = !betsOpen;
+      document.getElementById('gameBetAmount').disabled = !betsOpen;
+      document.getElementById('gameLockNotice').innerText = betsOpen
+        ? 'Round ke aakhri 5 seconds mein bets band rahenge.'
+        : 'Bets band hain — agla round shuru hone ka intezar karein.';
+    }
+
+    function getOutcomeColor(number) {
+      if (number === 0) return 'red violet';
+      if (number === 5) return 'green violet';
+      return number % 2 === 0 ? 'red' : 'green';
+    }
+
+    function isWinningBet(bet, number) {
+      if (bet.type === 'number') return Number(bet.pick) === number;
+      if (bet.type === 'size') return bet.pick === (number >= 5 ? 'big' : 'small');
+      return getOutcomeColor(number).split(' ').includes(bet.pick);
+    }
+
+    function randomGameNumber() {
+      const values = new Uint32Array(1);
+      window.crypto.getRandomValues(values);
+      const limit = Math.floor(0x100000000 / 10) * 10;
+      while (values[0] >= limit) window.crypto.getRandomValues(values);
+      return values[0] % 10;
+    }
+
+    function resolveGameRound(period, roundStart) {
+      const roundId = `${period}:${roundStart}`;
+      const history = getGameHistory();
+      history[period] = history[period] || [];
+      if (history[period].some(round => round.id === roundId)) return;
+
+      const number = randomGameNumber();
+      const bets = getGameBets();
+      bets.forEach(bet => {
+        if (bet.period !== period || bet.roundId !== roundId || bet.status !== 'Pending') return;
+        if (isWinningBet(bet, number)) {
+          bet.status = 'Won';
+          bet.returnAmount = bet.amount * 2;
+          changeUserBalance(bet.userEmail, bet.returnAmount);
+        } else {
+          bet.status = 'Lost';
+          bet.returnAmount = 0;
+        }
+        bet.resultNumber = number;
+      });
+      saveGameBets(bets);
+
+      history[period].unshift({
+        id: roundId,
+        number,
+        color: getOutcomeColor(number),
+        size: number >= 5 ? 'Big' : 'Small',
+        date: new Date(roundStart).toLocaleString()
+      });
+      history[period] = history[period].slice(0, 100);
+      saveGameHistory(history);
+      updateUserData();
+    }
+
+    function changeUserBalance(email, amount) {
+      const users = getUsers();
+      const user = users.find(item => item.email === email);
+      if (!user) return;
+      user.balance = Math.round(((Number(user.balance) || 0) + amount) * 100) / 100;
+      saveUsers(users);
+      if (currentUser && currentUser.email === email) {
+        currentUser = user;
+        document.querySelectorAll('.userBalance').forEach(el => el.innerText = Number(user.balance).toFixed(2));
+      }
+    }
+
+    function placeGameBet(event) {
+      event.preventDefault();
+      const amount = Math.round(Number(document.getElementById('gameBetAmount').value) * 100) / 100;
+      const type = document.getElementById('gameBetType').value;
+      const pick = document.getElementById('gamePick').value;
+      const roundEnds = getGameRoundEnds();
+      const remainingMs = roundEnds[selectedGamePeriod] - Date.now();
+      const balance = Number(currentUser.balance) || 0;
+
+      if (!Number.isFinite(amount) || amount < 1) { alert('Minimum bet ₹1 hai.'); return; }
+      if (!['color', 'number', 'size'].includes(type)) { alert('Bet type sahi nahi hai.'); return; }
+      if (remainingMs <= 5000) { alert('Round ke aakhri 5 seconds mein bet nahi lag sakti.'); return; }
+      if (amount > balance) { alert('Wallet mein itna balance nahi hai.'); return; }
+
+      const users = getUsers();
+      const user = users.find(item => item.email === currentUser.email);
+      if (!user || Number(user.balance) < amount) { alert('Wallet balance update nahi hua. Dobara try karein.'); return; }
+
+      user.balance = Math.round((Number(user.balance) - amount) * 100) / 100;
+      saveUsers(users);
+      currentUser = user;
+      const roundStart = roundEnds[selectedGamePeriod] - selectedGamePeriod;
+      const bets = getGameBets();
+      bets.unshift({
+        id: `${currentUser.email}:${Date.now()}:${Math.random().toString(36).slice(2)}`,
+        userEmail: currentUser.email,
+        period: selectedGamePeriod,
+        roundId: `${selectedGamePeriod}:${roundStart}`,
+        type,
+        pick,
+        amount,
+        returnAmount: 0,
+        status: 'Pending',
+        date: new Date().toLocaleString()
+      });
+      saveGameBets(bets);
+      document.getElementById('gameBetAmount').value = '';
+      updateUserData();
+      alert('Bet lag gayi! Jeetne par total 2x return milega.');
+    }
+
+    function renderGameHistory() {
+      const history = getGameHistory()[selectedGamePeriod] || [];
+      const container = document.getElementById('gameHistory');
+      if (!history.length) {
+        container.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-500">Abhi koi result nahi hai</td></tr>';
+        document.getElementById('gameHistoryPagination').innerHTML = '';
+        return;
+      }
+      const totalPages = Math.ceil(history.length / historyPageSize);
+      gameHistoryPage = Math.min(gameHistoryPage, totalPages);
+      const startIndex = (gameHistoryPage - 1) * historyPageSize;
+      container.innerHTML = history.slice(startIndex, startIndex + historyPageSize).map(round => {
+        const colorClass = round.color.includes('violet') ? 'text-violet-400'
+          : round.color.includes('green') ? 'text-emerald-400' : 'text-rose-400';
+        return `<tr class="border-b border-slate-800">
+          <td class="py-2 pr-2 text-slate-500">${round.date}</td>
+          <td class="py-2 pr-2 font-bold text-white">${round.number}</td>
+          <td class="py-2 pr-2 font-semibold ${colorClass}">${round.color}</td>
+          <td class="py-2">${round.size}</td>
+        </tr>`;
+      }).join('');
+      renderHistoryPagination('gameHistoryPagination', gameHistoryPage, totalPages, 'changeGameHistoryPage');
+    }
+
+    function renderMyGameHistory() {
+      const bets = getGameBets().filter(bet =>
+        currentUser && bet.userEmail === currentUser.email && bet.period === selectedGamePeriod
+      ).slice(0, 50);
+      const container = document.getElementById('myGameHistory');
+      if (!bets.length) {
+        container.innerHTML = '<p class="text-center py-3">Abhi koi bet nahi hai</p>';
+        document.getElementById('myGameHistoryPagination').innerHTML = '';
+        return;
+      }
+      const totalPages = Math.ceil(bets.length / historyPageSize);
+      myGameHistoryPage = Math.min(myGameHistoryPage, totalPages);
+      const startIndex = (myGameHistoryPage - 1) * historyPageSize;
+      container.innerHTML = bets.slice(startIndex, startIndex + historyPageSize).map(bet => {
+        const label = bet.type === 'size' ? (bet.pick === 'big' ? 'Big' : 'Small')
+          : bet.type === 'number' ? `Number ${bet.pick}` : `${bet.pick} color`;
+        const result = bet.status === 'Pending' ? 'Pending'
+          : bet.status === 'Won' ? `Won · +₹${Number(bet.returnAmount).toFixed(2)}`
+            : 'Lost';
+        const resultClass = bet.status === 'Won' ? 'text-emerald-400'
+          : bet.status === 'Lost' ? 'text-rose-400' : 'text-amber-300';
+        return `<div class="flex justify-between items-center gap-2 p-2 rounded-lg bg-slate-800/50">
+          <div><p class="font-semibold text-slate-200">${label} · ₹${Number(bet.amount).toFixed(2)}</p>
+          <p class="text-[10px] text-slate-500">${bet.date} · ${periodName(bet.period)}</p></div>
+          <span class="font-bold ${resultClass}">${result}</span>
+        </div>`;
+      }).join('');
+      renderHistoryPagination('myGameHistoryPagination', myGameHistoryPage, totalPages, 'changeMyGameHistoryPage');
+    }
+
+    function renderHistoryPagination(containerId, page, totalPages, changePageFunction) {
+      const buttonClass = 'px-3 py-2 rounded-lg border border-slate-200 bg-slate-100 text-slate-600 font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-rose-50';
+      document.getElementById(containerId).innerHTML = `
+        <button type="button" onclick="${changePageFunction}(-1)" ${page === 1 ? 'disabled' : ''} class="${buttonClass}">Previous</button>
+        <span class="text-slate-500">Page ${page} of ${totalPages}</span>
+        <button type="button" onclick="${changePageFunction}(1)" ${page === totalPages ? 'disabled' : ''} class="${buttonClass}">Next</button>`;
+    }
+
+    function changeGameHistoryPage(direction) {
+      gameHistoryPage += direction;
+      renderGameHistory();
+    }
+
+    function changeMyGameHistoryPage(direction) {
+      myGameHistoryPage += direction;
+      renderMyGameHistory();
+    }
+
+    function openDepositModal() { document.getElementById('depositModal').classList.remove('hidden'); }
+    function openWithdrawModal() { document.getElementById('withdrawModal').classList.remove('hidden'); }
+    function closeModals() {
+      document.getElementById('depositModal').classList.add('hidden');
+      document.getElementById('withdrawModal').classList.add('hidden');
+    }
+
+    function handleDepositSubmit(e) {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('depositAmount').value);
+      const utr = document.getElementById('depositUTR').value.trim();
+
+      const reqs = getRequests();
+      reqs.push({
+        id: Date.now(),
+        userEmail: currentUser.email,
+        userName: currentUser.name,
+        type: 'Deposit',
+        amount: amount,
+        utr: utr,
+        status: 'Pending',
+        date: new Date().toLocaleString()
+      });
+      saveRequests(reqs);
+      alert('Deposit Request Bhej Di Gayi Hai! Admin approval ka intazar karein.');
+      closeModals();
+      renderHistory();
+    }
+
+    function handleWithdrawSubmit(e) {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+      const upi = document.getElementById('withdrawUPI').value.trim();
+
+      if (amount > currentUser.balance) { alert('Aapke wallet me itna balance nahi hai!'); return; }
+
+      const reqs = getRequests();
+      reqs.push({
+        id: Date.now(),
+        userEmail: currentUser.email,
+        userName: currentUser.name,
+        type: 'Withdraw',
+        amount: amount,
+        upi: upi,
+        status: 'Pending',
+        date: new Date().toLocaleString()
+      });
+      saveRequests(reqs);
+      alert('Withdrawal Request Bhej Di Gayi Hai!');
+      closeModals();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const reqs = getRequests().filter(r => r.userEmail === currentUser.email).reverse();
+      const container = document.getElementById('transactionHistory');
+      if (reqs.length === 0) {
+        container.innerHTML = '<p class="text-center py-4">Koi transaction nahi mila</p>';
+        return;
+      }
+      container.innerHTML = reqs.map(r => `
+        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-800/50">
+          <div>
+            <p class="font-bold ${r.type==='Deposit'?'text-emerald-400':'text-rose-400'}">${r.type} - ₹${r.amount}</p>
+            <p class="text-[10px] text-slate-500">${r.date}</p>
+          </div>
+          <span class="px-2 py-0.5 text-[10px] rounded ${r.status==='Approved'?'bg-emerald-500/20 text-emerald-400':r.status==='Rejected'?'bg-rose-500/20 text-rose-400':'bg-amber-500/20 text-amber-400'}">${r.status}</span>
+        </div>
+      `).join('');
+    }
+
+    const gameTitles = {
+      wingo: 'Win Go',
+      mines: 'Mines',
+      dice: 'Dice',
+      plinko: 'Plinko',
+      chicken: 'Chicken Roll'
+    };
+    let activeGame = null;
+
+    function openGame(game) {
+      if (!Object.prototype.hasOwnProperty.call(gameTitles, game)) return;
+      activeGame = game;
+      document.getElementById('lobbyView').classList.add('hidden');
+      document.getElementById('gameView').classList.remove('hidden');
+      document.getElementById('activeGameTitle').innerText = gameTitles[game];
+      document.getElementById('winGoContent').classList.toggle('hidden', game !== 'wingo');
+      const mount = document.getElementById('additionalGameMount');
+      mount.classList.toggle('hidden', game === 'wingo');
+      if (game !== 'wingo') renderAdditionalGame(game);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeGame() {
+      activeGame = null;
+      const lobby = document.getElementById('lobbyView');
+      const gameView = document.getElementById('gameView');
+      if (lobby) lobby.classList.remove('hidden');
+      if (gameView) gameView.classList.add('hidden');
+    }
+
+    function renderAdditionalGame(game) {
+      const mount = document.getElementById('additionalGameMount');
+      if (game === 'mines') {
+        mount.innerHTML = `
+          <section class="arcade-panel rounded-2xl p-4 sm:p-6">
+            <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
+              <div><h2 class="text-xl font-extrabold">Mines</h2><p class="mt-1 text-sm text-slate-500">Pick safe tiles, grow your multiplier, and cash out any time.</p></div>
+              <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">25 tiles</span>
+            </div>
+            <div class="game-layout gap-5">
+              <div class="space-y-4">
+                <div id="mineBoard" class="mine-board" aria-label="Mines game board"></div>
+                <div id="mineMessage" class="min-h-10 rounded-xl bg-slate-50 p-3 text-sm text-slate-600" aria-live="polite">Choose your stake and start a round.</div>
+              </div>
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                  <div><label for="mineBetAmount">Bet amount (₹)</label><input id="mineBetAmount" class="arcade-control" type="number" min="1" step="0.01" placeholder="Minimum ₹1"></div>
+                  <div><label for="mineCount">Number of mines</label><select id="mineCount" class="arcade-control"><option value="3">3 mines · lower risk</option><option value="5">5 mines · medium risk</option><option value="10">10 mines · high risk</option></select></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Safe picks</p><p id="mineSafeCount" class="mt-1 font-bold">0</p></div>
+                  <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Cash-out return</p><p id="minePayout" class="mt-1 font-bold text-emerald-700">₹0.00</p></div>
+                </div>
+                <p id="mineMultiplier" class="text-sm font-bold text-amber-700">Current multiplier: 1.00x</p>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                  <button id="startMineButton" onclick="startMinesRound()" class="arcade-primary">Start round</button>
+                  <button id="cashOutMineButton" onclick="cashOutMines()" class="rounded-xl bg-emerald-600 px-4 py-3 font-bold text-white hover:bg-emerald-700" disabled>Cash out</button>
+                </div>
+              </div>
+            </div>
+            <p class="mt-4 text-xs text-slate-500">Each safe pick adds to your multiplier: +0.15x for 3 mines, +0.25x for 5 mines, and +0.50x for 10 mines. Hitting a mine loses the stake.</p>
+          </section>`;
+        renderMinesGame();
+      } else if (game === 'chicken') {
+        mount.innerHTML = `
+          <section class="arcade-panel mx-auto w-full max-w-3xl space-y-5 rounded-2xl p-4 sm:p-6">
+            <div class="flex items-start justify-between gap-3">
+              <div><h2 class="text-xl font-extrabold">Chicken Roll</h2><p class="mt-1 text-sm text-slate-500">Jump from the bottom of the road to the top. Avoid cars and cash out whenever you like.</p></div>
+              <span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-800">🐔 8 jumps</span>
+            </div>
+            <div class="game-layout gap-5">
+              <div class="space-y-4">
+                <div id="chickenTrack" class="chicken-track rounded-xl bg-slate-100 p-2" aria-label="Chicken road from bottom to top"></div>
+                <div id="chickenMessage" class="min-h-10 rounded-xl bg-slate-50 p-3 text-sm text-slate-600" aria-live="polite">Set your stake and start a round.</div>
+              </div>
+              <div class="space-y-4">
+                <div><label for="chickenBetAmount">Bet amount (₹)</label><input id="chickenBetAmount" class="arcade-control" type="number" min="1" step="0.01" placeholder="Minimum ₹1"></div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Safe jumps</p><p id="chickenStepCount" class="mt-1 font-bold">0 / 8</p></div>
+                  <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Cash-out return</p><p id="chickenPayout" class="mt-1 font-bold text-emerald-700">₹0.00</p></div>
+                </div>
+                <p id="chickenMultiplier" class="text-sm font-bold text-orange-700">Current multiplier: 1.00x</p>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                  <button id="startChickenButton" onclick="startChickenRound()" class="arcade-primary bg-orange-600 hover:bg-orange-700">Start round</button>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button id="jumpChickenButton" onclick="jumpChicken()" class="rounded-xl bg-orange-600 px-4 py-3 font-bold text-white hover:bg-orange-700" disabled>Jump ↑</button>
+                    <button id="cashOutChickenButton" onclick="cashOutChicken()" class="rounded-xl bg-emerald-600 px-4 py-3 font-bold text-white hover:bg-emerald-700" disabled>Cash out</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500">Each jump moves the chicken one lane upward. A car hit loses the stake; cash-out returns the displayed amount.</p>
+          </section>`;
+        renderChickenGame();
+      } else if (game === 'dice') {
+        mount.innerHTML = `
+          <section class="arcade-panel mx-auto w-full max-w-3xl space-y-5 rounded-2xl p-4 sm:p-6">
+            <div><h2 class="text-xl font-extrabold">Dice</h2><p class="mt-1 text-sm text-slate-500">Choose a number range, roll 1–10, and win if the result lands in your range.</p></div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div><label for="diceBetAmount">Bet amount (₹)</label><input id="diceBetAmount" class="arcade-control" type="number" min="1" step="0.01" placeholder="Minimum ₹1"></div>
+              <div><label for="diceRange">Winning range</label><select id="diceRange" class="arcade-control"><option value="1-5">1 to 5</option><option value="5-10">5 to 10</option></select><p class="mt-1 text-xs text-slate-500">Win when the roll is in your chosen range · payout 2.00x</p></div>
+            </div>
+            <button onclick="playDice()" class="arcade-primary w-full bg-violet-600 hover:bg-violet-700">Roll dice</button>
+            <div id="diceResult" class="rounded-2xl bg-violet-50 p-6 text-center text-lg font-bold text-violet-900" aria-live="polite">Ready to roll?</div>
+            <p class="text-xs text-slate-500">Winning payout returns 2x your stake, including your original bet.</p>
+          </section>`;
+      } else if (game === 'plinko') {
+        mount.innerHTML = `
+          <section class="arcade-panel mx-auto w-full max-w-3xl space-y-5 rounded-2xl p-4 sm:p-6">
+            <div><h2 class="text-xl font-extrabold">Plinko</h2><p class="mt-1 text-sm text-slate-500">Drop a ball through 8 rows. The landing slot sets your payout.</p></div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div><label for="plinkoBetAmount">Bet amount (₹)</label><input id="plinkoBetAmount" class="arcade-control" type="number" min="1" step="0.01" placeholder="Minimum ₹1"></div>
+              <div><label for="plinkoRisk">Risk level</label><select id="plinkoRisk" class="arcade-control"><option value="low">Low risk</option><option value="medium" selected>Medium risk</option><option value="high">High risk</option></select></div>
+            </div>
+            <button onclick="playPlinko()" class="arcade-primary w-full bg-sky-600 hover:bg-sky-700">Drop ball</button>
+            <div id="plinkoResult" class="space-y-4 rounded-2xl bg-sky-50 p-4 text-center text-sky-950" aria-live="polite">Ready to drop your ball?</div>
+            <p class="text-xs text-slate-500">Landing slots show the demo return multiplier for each risk level. Winning payout includes your stake.</p>
+          </section>`;
+      }
+    }
+
+    function arcadeBalanceKey() {
+      return `app_arcade_round_${currentUser.email}`;
+    }
+
+    function saveArcadeRound(round) {
+      if (round) localStorage.setItem(arcadeBalanceKey(), JSON.stringify(round));
+      else localStorage.removeItem(arcadeBalanceKey());
+    }
+
+    function loadArcadeRound(game = 'mines') {
+      const round = JSON.parse(localStorage.getItem(arcadeBalanceKey()) || 'null');
+      return round && round.game === game ? round : null;
+    }
+
+    function loadAnyArcadeRound() {
+      return JSON.parse(localStorage.getItem(arcadeBalanceKey()) || 'null');
+    }
+
+    function debitArcadeBet(value) {
+      const amount = Math.round(Number(value) * 100) / 100;
+      if (!Number.isFinite(amount) || amount < 1) {
+        alert('Minimum bet ₹1 hai.');
+        return null;
+      }
+      const users = getUsers();
+      const user = users.find(item => item.email === currentUser.email);
+      if (!user || Number(user.balance) < amount) {
+        alert('Wallet mein itna balance nahi hai.');
+        return null;
+      }
+      user.balance = Math.round((Number(user.balance) - amount) * 100) / 100;
+      saveUsers(users);
+      currentUser = user;
+      updateUserData();
+      return amount;
+    }
+
+    function payArcadeReturn(amount) {
+      const payout = Math.round(amount * 100) / 100;
+      changeUserBalance(currentUser.email, payout);
+      updateUserData();
+    }
+
+    function randomIndex(max) {
+      const value = new Uint32Array(1);
+      const limit = Math.floor(0x100000000 / max) * max;
+      do { window.crypto.getRandomValues(value); } while (value[0] >= limit);
+      return value[0] % max;
+    }
+
+    function startMinesRound() {
+      const currentRound = loadAnyArcadeRound();
+      if (currentRound && !currentRound.roundOver) {
+        alert(currentRound.game === 'mines'
+          ? 'Pehle current Mines round complete ya cash out karein.'
+          : 'Pehle current Chicken Roll round complete ya cash out karein.');
+        return;
+      }
+      const amount = debitArcadeBet(document.getElementById('mineBetAmount').value);
+      if (amount === null) return;
+      const mineCount = Number(document.getElementById('mineCount').value);
+      const mines = [];
+      while (mines.length < mineCount) {
+        const index = randomIndex(25);
+        if (!mines.includes(index)) mines.push(index);
+      }
+      saveArcadeRound({ game: 'mines', amount, mineCount, mines, revealed: [], roundOver: false });
+      renderMinesGame();
+    }
+
+    function minesMultiplier(round) {
+      const multiplierIncrease = round.mineCount === 3 ? 0.15 : round.mineCount === 5 ? 0.25 : 0.50;
+      return 1 + round.revealed.length * multiplierIncrease;
+    }
+
+    function renderMinesGame() {
+      const board = document.getElementById('mineBoard');
+      if (!board) return;
+      const round = loadArcadeRound();
+      const selectedMines = Number(document.getElementById('mineCount').value || 3);
+      const mineCount = round ? round.mineCount : selectedMines;
+      const revealed = round ? round.revealed : [];
+      board.innerHTML = Array.from({ length: 25 }, (_, index) => {
+        const isMine = Boolean(round && round.mines.includes(index));
+        const isRevealed = revealed.includes(index);
+        const showMine = isMine && (isRevealed || round.roundOver);
+        const showGem = isRevealed && !isMine;
+        const disabled = !round || round.roundOver || isRevealed;
+        const tileClass = showMine ? 'mine' : showGem ? 'safe' : '';
+        const tileIcon = showMine ? '💣' : showGem ? '💎' : '';
+        return `<button type="button" class="mine-cell ${tileClass}" onclick="pickMineTile(${index})" ${disabled ? 'disabled' : ''} aria-label="Tile ${index + 1}${showMine ? ', mine' : showGem ? ', gem' : ''}">${tileIcon}</button>`;
+      }).join('');
+      document.getElementById('mineSafeCount').innerText = String(revealed.length);
+      const multiplier = round && revealed.length ? minesMultiplier(round) : 1;
+      document.getElementById('mineMultiplier').innerText = `Current multiplier: ${multiplier.toFixed(2)}x`;
+      const payout = round && revealed.length && round.hitMine === undefined ? round.amount * multiplier : 0;
+      document.getElementById('minePayout').innerText = `₹${payout.toFixed(2)}`;
+      document.getElementById('startMineButton').disabled = Boolean(round && !round.roundOver);
+      document.getElementById('cashOutMineButton').disabled = !round || round.roundOver || revealed.length === 0;
+      const message = document.getElementById('mineMessage');
+      if (!round) message.innerText = 'Choose your stake and start a round.';
+      else if (!round.roundOver) message.innerText = revealed.length
+        ? `${revealed.length} safe pick${revealed.length === 1 ? '' : 's'} — cash out now or keep going.`
+        : `${mineCount} mines hidden. Pick a tile to start.`;
+      else message.innerText = round.hitMine !== undefined ? 'Mine hit — stake lost. Start a new round.' : 'Round cashed out. Start a new round.';
+    }
+
+    function pickMineTile(index) {
+      const round = loadArcadeRound();
+      if (!round || round.roundOver || round.revealed.includes(index)) return;
+      if (round.mines.includes(index)) {
+        round.roundOver = true;
+        round.hitMine = index;
+      } else {
+        round.revealed.push(index);
+      }
+      saveArcadeRound(round);
+      renderMinesGame();
+    }
+
+    function cashOutMines() {
+      const round = loadArcadeRound();
+      if (!round || round.roundOver || !round.revealed.length) return;
+      const payout = round.amount * minesMultiplier(round);
+      round.roundOver = true;
+      round.cashedOut = true;
+      saveArcadeRound(round);
+      payArcadeReturn(payout);
+      renderMinesGame();
+    }
+
+    const chickenMaxJumps = 8;
+    const chickenSafeProbability = 0.75;
+
+    function chickenMultiplier(steps) {
+      return Math.pow(0.97 / chickenSafeProbability, steps);
+    }
+
+    function startChickenRound() {
+      const currentRound = loadAnyArcadeRound();
+      if (currentRound && !currentRound.roundOver) {
+        alert(currentRound.game === 'mines'
+          ? 'Pehle current Mines round complete ya cash out karein.'
+          : 'Pehle current Chicken Roll round complete ya cash out karein.');
+        return;
+      }
+      const amount = debitArcadeBet(document.getElementById('chickenBetAmount').value);
+      if (amount === null) return;
+      const hazards = Array.from({ length: chickenMaxJumps }, () => randomIndex(4) === 0);
+      saveArcadeRound({ game: 'chicken', amount, hazards, steps: 0, roundOver: false });
+      renderChickenGame();
+    }
+
+    function renderChickenGame() {
+      const track = document.getElementById('chickenTrack');
+      if (!track) return;
+      const round = loadArcadeRound('chicken');
+      const steps = round ? round.steps : 0;
+      const hitLane = round && round.hitLane;
+      track.innerHTML = Array.from({ length: chickenMaxJumps + 1 }, (_, lane) => {
+        const isHit = Boolean(round && round.roundOver && hitLane === lane);
+        const isSafe = lane > 0 && lane <= steps;
+        const hasChicken = isHit || (lane === steps && !(round && round.hitLane));
+        const laneClass = isHit ? 'crash' : isSafe ? 'safe' : '';
+        const bird = hasChicken ? `<span class="chicken-bird ${isHit ? 'hit' : ''}" aria-label="Chicken">🐔</span>` : '';
+        const car = isHit ? '<span class="chicken-car hit" aria-label="Car">🚗</span>' : '';
+        const marker = lane === 0 ? 'START' : `LANE ${lane}`;
+        return `<div class="chicken-lane ${laneClass}" aria-label="${marker}${isSafe ? ', safe' : isHit ? ', car hit' : ''}"><span class="w-14 shrink-0 text-[10px] font-bold text-slate-500">${marker}</span>${bird}<span class="flex-1 border-t border-dashed border-slate-400/60"></span>${car}${isSafe ? '<span class="font-bold text-emerald-700">✓</span>' : ''}</div>`;
+      }).join('');
+      const multiplier = steps ? chickenMultiplier(steps) : 1;
+      document.getElementById('chickenStepCount').innerText = `${steps} / ${chickenMaxJumps}`;
+      document.getElementById('chickenMultiplier').innerText = `Current multiplier: ${multiplier.toFixed(2)}x`;
+      document.getElementById('chickenPayout').innerText = `₹${round && steps ? (round.amount * multiplier).toFixed(2) : '0.00'}`;
+      document.getElementById('startChickenButton').disabled = Boolean(round && !round.roundOver);
+      document.getElementById('chickenBetAmount').disabled = Boolean(round && !round.roundOver);
+      document.getElementById('jumpChickenButton').disabled = !round || round.roundOver;
+      document.getElementById('cashOutChickenButton').disabled = !round || round.roundOver || steps === 0;
+      const message = document.getElementById('chickenMessage');
+      if (!round) message.innerText = 'Set your stake and start a round.';
+      else if (round.hitLane) message.innerText = 'A car hit the chicken — stake lost. Start a new round.';
+      else if (round.cashedOut && steps === chickenMaxJumps) message.innerText = 'Road cleared! Your full return has been added to the wallet.';
+      else if (round.roundOver) message.innerText = 'Cashed out! Your return has been added to the wallet.';
+      else if (steps) message.innerText = `${steps} safe jump${steps === 1 ? '' : 's'} — jump again or cash out now.`;
+      else message.innerText = 'Chicken starts at the bottom. Make your first jump upward!';
+    }
+
+    function jumpChicken() {
+      const round = loadArcadeRound('chicken');
+      if (!round || round.roundOver) return;
+      const nextLane = round.steps + 1;
+      if (round.hazards[nextLane - 1]) {
+        round.roundOver = true;
+        round.hitLane = nextLane;
+      } else {
+        round.steps = nextLane;
+      }
+      saveArcadeRound(round);
+      if (!round.roundOver && round.steps === chickenMaxJumps) {
+        const payout = Math.round(round.amount * chickenMultiplier(round.steps) * 100) / 100;
+        round.roundOver = true;
+        round.cashedOut = true;
+        saveArcadeRound(round);
+        payArcadeReturn(payout);
+      }
+      renderChickenGame();
+    }
+
+    function cashOutChicken() {
+      const round = loadArcadeRound('chicken');
+      if (!round || round.roundOver || !round.steps) return;
+      const payout = Math.round(round.amount * chickenMultiplier(round.steps) * 100) / 100;
+      round.roundOver = true;
+      round.cashedOut = true;
+      saveArcadeRound(round);
+      payArcadeReturn(payout);
+      renderChickenGame();
+    }
+
+    function playDice() {
+      const amount = debitArcadeBet(document.getElementById('diceBetAmount').value);
+      if (amount === null) return;
+      const [rangeStart, rangeEnd] = document.getElementById('diceRange').value.split('-').map(Number);
+      const roll = randomIndex(10) + 1;
+      const won = roll >= rangeStart && roll <= rangeEnd;
+      const multiplier = 2;
+      if (won) payArcadeReturn(amount * multiplier);
+      document.getElementById('diceResult').innerHTML = `You rolled <span class="text-2xl">${roll}</span> · Range ${rangeStart}–${rangeEnd}<br><span class="${won ? 'text-emerald-700' : 'text-rose-700'}">${won ? `You win · ₹${(amount * multiplier).toFixed(2)} returned` : 'No win this time'}</span>`;
+    }
+
+    const plinkoMultipliers = {
+      low: [2.5, 1.6, 1.2, 0.9, 0.7, 0.9, 1.2, 1.6, 2.5],
+      medium: [4, 2, 1.4, 0.8, 0.5, 0.8, 1.4, 2, 4],
+      high: [12, 4, 1.7, 0.4, 0.1, 0.4, 1.7, 4, 12]
+    };
+
+    function playPlinko() {
+      const amount = debitArcadeBet(document.getElementById('plinkoBetAmount').value);
+      if (amount === null) return;
+      const risk = document.getElementById('plinkoRisk').value;
+      let slot = 0;
+      for (let row = 0; row < 8; row += 1) slot += randomIndex(2);
+      const multiplier = plinkoMultipliers[risk][slot];
+      const payout = Math.round(amount * multiplier * 100) / 100;
+      if (payout > 0) payArcadeReturn(payout);
+      const bins = plinkoMultipliers[risk].map((value, index) =>
+        `<span class="rounded-lg px-2 py-2 text-xs font-bold ${index === slot ? 'bg-sky-700 text-white ring-2 ring-sky-300' : 'bg-white text-slate-600'}">${value}x</span>`
+      ).join('');
+      document.getElementById('plinkoResult').innerHTML = `<p class="font-bold">Ball landed in slot ${slot + 1}</p><div class="grid grid-cols-9 gap-1">${bins}</div><p class="text-sm font-semibold">${multiplier >= 1 ? `You win · ₹${payout.toFixed(2)} returned` : `Return · ₹${payout.toFixed(2)}`}</p>`;
+    }
+
+    function logout() {
+      localStorage.removeItem('active_session');
+      location.reload();
+    }
+
+    // Auto-login session restore
+    window.onload = function() {
+      document.getElementById('footerYear').innerText = String(new Date().getFullYear());
+      const session = localStorage.getItem('active_session');
+      if (session) {
+        const users = getUsers();
+        const user = users.find(u => u.email === JSON.parse(session));
+        if (user) { currentUser = user; showDashboard(); }
+      }
+    };
+  </script>
+</body>
+</html>
